@@ -1,44 +1,81 @@
 <template>
   <nav class="navbar navbar-dark bg-dark fixed-top">
     <div class="container-fluid d-flex justify-content-between">
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation" aria-expanded="false">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand ms-auto" href="#">Offcanvas dark navbar</a>
-      <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+      <a class="navbar-brand ms-auto" href="#">
+        <img src="#" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+        Minha Marca
+      </a>
+      
+      <!-- Offcanvas para o menu -->
+      <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel" ref="offcanvas">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+          <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+        
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <RouterLink class="nav-link" aria-current="page" to="/">
+                <i class="bi bi-house-door-fill"></i> Início
+              </RouterLink>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu dropdown-menu-dark">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+              <RouterLink class="nav-link" aria-current="page" to="/about">
+                <i class="bi bi-info-circle-fill"></i> Sobre
+              </RouterLink>
             </li>
           </ul>
           <form class="d-flex mt-3" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-success" type="submit">Search</button>
+            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar" ref="searchInput">
+            <button class="btn btn-success" type="submit">Buscar</button>
           </form>
         </div>
       </div>
     </div>
   </nav>
+
+  <RouterView />
 </template>
 
+<script setup>
+import { onMounted, ref } from 'vue';
+import { RouterLink, RouterView } from 'vue-router';
+
+// Referência para o offcanvas e campo de busca
+const offcanvas = ref(null);
+const searchInput = ref(null);
+
+onMounted(() => {
+  const bsOffcanvas = new bootstrap.Offcanvas(offcanvas.value);
+
+  // Função para fechar o offcanvas
+  const closeOffcanvas = () => {
+    bsOffcanvas.hide();
+  };
+
+  // Fechar o offcanvas ao clicar nos links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', closeOffcanvas);
+  });
+
+  // Focar no campo de busca ao abrir o offcanvas
+  offcanvas.value.addEventListener('shown.bs.offcanvas', () => {
+    searchInput.value.focus();
+  });
+});
+</script>
+
+<style scoped>
+
+.navbar-brand img {
+  margin-right: 8px;
+}
+
+.nav-link i {
+  margin-right: 5px;
+}
+</style>
